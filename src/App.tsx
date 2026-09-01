@@ -1,122 +1,134 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import React, { useState } from 'react';
+import { useTasks } from '@/hooks/useTasks';
+import { TaskFilters } from '@/types/task';
+import { db } from '@/services/mockDatabase';
+import TaskList from '@/components/tasks/TaskList';
+import TaskFiltersComponent from '@/components/tasks/TaskFilters';
+import TaskSearch from '@/components/tasks/TaskSearch';
+import TaskPagination from '@/components/tasks/TaskPagination';
+import StatsCards from '@/components/dashboard/StatsCards';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
+import ErrorState from '@/components/common/ErrorState';
+import CreateTaskModal from '@/components/tasks/CreateTaskModal';
+import { ClipboardList, Plus } from 'lucide-react';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [filters, setFilters] = useState<TaskFilters>({
+    page: 1,
+    limit: 20,
+    sortBy: 'createdAt',
+    sortOrder: 'desc',
+  });
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const { tasks, loading, error, pagination, refetch } = useTasks(filters);
+
+  const handleFilterChange = (newFilters: Partial<TaskFilters>) => {
+    setFilters((prev) => ({
+      ...prev,
+      ...newFilters,
+      page: 1,
+    }));
+  };
+
+  const handlePageChange = (page: number) => {
+    setFilters((prev) => ({
+      ...prev,
+      page,
+    }));
+  };
+
+  const handleSearch = (search: string) => {
+    console.log('Searching for:', search);
+
+    setFilters((prev) => ({
+      ...prev,
+      search,
+      page: 1,
+    }));
+  };
+
+  const handleCreateTask = (newTask: any) => {
+    db.create(newTask);
+    refetch();
+    setIsModalOpen(false);
+  };
+
+  if (loading) {
+    return <LoadingSpinner message="Loading tasks..." />;
+  }
+
+  if (error) {
+    return <ErrorState message={error} onRetry={refetch} />;
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto max-w-7xl px-4 py-6">
+        {/* Header */}
+        <header className="mb-6">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <h1 className="flex items-center gap-2 text-3xl font-bold text-gray-900">
+                <ClipboardList className="h-8 w-8 text-blue-600" />
+                Team Task System
+              </h1>
 
-      <div className="ticks"></div>
+              <p className="mt-1 text-gray-600">
+                Manage your team's work efficiently
+              </p>
+            </div>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(true)}
+              className="flex items-center gap-2 rounded-lg bg-blue-500 px-4 py-2 font-medium text-white shadow-sm transition-colors hover:bg-blue-600"
+            >
+              <Plus className="h-5 w-5" />
+              New Task
+            </button>
+          </div>
+        </header>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+        {/* Stats */}
+        <StatsCards tasks={tasks} />
+
+        {/* Search & Filters */}
+        <div className="mb-6 space-y-4">
+          <TaskSearch
+            onSearch={handleSearch}
+            initialValue={filters.search || ''}
+          />
+
+          <TaskFiltersComponent
+            filters={filters}
+            onFilterChange={handleFilterChange}
+          />
+        </div>
+
+        {/* Task List */}
+        <TaskList
+          tasks={tasks}
+          loading={loading}
+          onTaskUpdate={refetch}
+        />
+
+        {/* Pagination */}
+        <TaskPagination
+          pagination={pagination}
+          onPageChange={handlePageChange}
+        />
+
+        {/* Create Task Modal */}
+        <CreateTaskModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onCreate={handleCreateTask}
+        />
+      </div>
+    </div>
+  );
 }
 
-export default App
+export default App;
