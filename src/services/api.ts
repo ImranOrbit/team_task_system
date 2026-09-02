@@ -5,6 +5,12 @@ const simulateNetworkDelay = () => {
   return new Promise(resolve => setTimeout(resolve, 200 + Math.random() * 300));
 };
 
+// const simulateNetworkDelay = () => {
+//   return new Promise(resolve =>
+//     setTimeout(resolve, 4000)
+//   );
+// };
+
 interface ApiResponse<T> {
   success: boolean;
   data: T;

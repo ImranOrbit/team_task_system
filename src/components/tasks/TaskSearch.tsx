@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Search, X } from 'lucide-react';
+import React, { useState, useEffect, useRef } from "react";
+import { Search, X } from "lucide-react";
 
 interface TaskSearchProps {
   onSearch: (query: string) => void;
@@ -8,7 +8,7 @@ interface TaskSearchProps {
 
 const TaskSearch: React.FC<TaskSearchProps> = ({
   onSearch,
-  initialValue = '',
+  initialValue = "",
 }) => {
   const [value, setValue] = useState(initialValue);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -27,8 +27,8 @@ const TaskSearch: React.FC<TaskSearchProps> = ({
   };
 
   const handleClear = () => {
-    setValue('');
-    onSearch('');
+    setValue("");
+    onSearch("");
 
     requestAnimationFrame(() => {
       inputRef.current?.focus();
@@ -50,6 +50,29 @@ const TaskSearch: React.FC<TaskSearchProps> = ({
         placeholder="Search tasks by title, description, or assignee..."
         autoComplete="off"
         aria-label="Search tasks"
+        // className="
+        //   w-full
+        //   h-12
+        //   pl-10
+        //   pr-10
+        //   border
+        //   border-gray-300
+        //   rounded-lg
+        //   bg-white
+        //   text-sm
+        //   text-gray-900
+        //   placeholder:text-gray-400
+        //   outline-none
+        //   transition
+        //   focus:border-blue-500
+        //   focus:ring-2
+        //   focus:ring-blue-500/20
+
+        //   [&::-webkit-search-cancel-button]:appearance-none
+        //   [&::-webkit-search-decoration]:appearance-none
+        //   [&::-ms-clear]:hidden
+        // "
+
         className="
           w-full
           h-12
@@ -64,9 +87,19 @@ const TaskSearch: React.FC<TaskSearchProps> = ({
           placeholder:text-gray-400
           outline-none
           transition
-          focus:border-blue-500
-          focus:ring-2
-          focus:ring-blue-500/20
+
+          hover:border-gray-400
+
+          focus-visible:border-blue-500
+          focus-visible:ring-2
+          focus-visible:ring-blue-500/20
+
+          active:border-blue-600
+
+          disabled:cursor-not-allowed
+          disabled:bg-gray-100
+          disabled:text-gray-500
+          disabled:opacity-60
 
           [&::-webkit-search-cancel-button]:appearance-none
           [&::-webkit-search-decoration]:appearance-none

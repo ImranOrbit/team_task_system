@@ -30,12 +30,13 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate }) => {
     done: 'bg-emerald-50 text-emerald-700 border-emerald-200',
   };
 
-  const priorityColors = {
-    low: 'bg-red-50 text-red-500 border-red-500',
-    medium: 'bg-yellow-50 text-yellow-500 border-yellow-500',
-    high: 'bg-green-50 text-green-500 border-green-500',
-    urgent: 'bg-orange-50 text-orange-500 border-orange-500',
-  };
+const priorityColors = {
+  low: 'bg-red-50 text-red-700 border-red-300',
+  medium: 'bg-yellow-50 text-yellow-800 border-yellow-300',
+  high: 'bg-green-50 text-green-700 border-green-300',
+  urgent: 'bg-orange-50 text-orange-700 border-orange-300',
+};
+
 
   const statusIcons = {
     todo: <ListTodo className="h-3.5 w-3.5" />,

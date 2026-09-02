@@ -62,7 +62,9 @@ const TaskPagination: React.FC<TaskPaginationProps> = ({
     'flex items-center justify-center rounded-lg border text-sm transition-colors';
 
   return (
-    <div className="mt-6 flex items-center justify-center gap-2">
+    // CHANGE: flex-wrap + width + padding
+    <div className="mt-6 flex w-full flex-wrap items-center justify-center gap-2 px-2">
+      
       {/* Previous Page */}
       <button
         type="button"
@@ -72,6 +74,7 @@ const TaskPagination: React.FC<TaskPaginationProps> = ({
         className={`
           ${buttonBase}
           h-10
+          shrink-0
           gap-1
           border-gray-300
           bg-white
@@ -80,6 +83,11 @@ const TaskPagination: React.FC<TaskPaginationProps> = ({
           hover:border-blue-500
           hover:bg-blue-50
           hover:text-blue-600
+          focus-visible:outline-none
+          focus-visible:ring-2
+          focus-visible:ring-blue-500
+          focus-visible:ring-offset-2
+          active:bg-blue-100
           disabled:cursor-not-allowed
           disabled:opacity-50
           disabled:hover:border-gray-300
@@ -107,13 +115,18 @@ const TaskPagination: React.FC<TaskPaginationProps> = ({
             ${buttonBase}
             h-10
             min-w-10
+            shrink-0
             px-3
+            focus-visible:outline-none
+            focus-visible:ring-2
+            focus-visible:ring-blue-500
+            focus-visible:ring-offset-2
             ${
               p === page
-                ? 'border-blue-500 bg-blue-500 text-white shadow-sm hover:bg-blue-600'
+                ? 'border-blue-500 bg-blue-500 text-white shadow-sm hover:bg-blue-600 active:bg-blue-700'
                 : p === '...'
                 ? 'cursor-default border-transparent bg-transparent text-gray-500'
-                : 'border-gray-300 bg-white text-gray-700 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-600'
+                : 'border-gray-300 bg-white text-gray-700 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-600 active:bg-blue-100'
             }
           `}
         >
@@ -130,6 +143,7 @@ const TaskPagination: React.FC<TaskPaginationProps> = ({
         className={`
           ${buttonBase}
           h-10
+          shrink-0
           gap-1
           border-gray-300
           bg-white
@@ -138,6 +152,11 @@ const TaskPagination: React.FC<TaskPaginationProps> = ({
           hover:border-blue-500
           hover:bg-blue-50
           hover:text-blue-600
+          focus-visible:outline-none
+          focus-visible:ring-2
+          focus-visible:ring-blue-500
+          focus-visible:ring-offset-2
+          active:bg-blue-100
           disabled:cursor-not-allowed
           disabled:opacity-50
           disabled:hover:border-gray-300

@@ -32,20 +32,33 @@ const TaskFiltersComponent: React.FC<TaskFiltersProps> = ({
   }, []);
 
   const selectClassName = `
-    rounded-lg
-    border
-    border-gray-300
-    bg-white
-    px-3
-    py-2
-    text-sm
-    text-gray-700
-    outline-none
-    transition
-    focus:border-blue-500
-    focus:ring-2
-    focus:ring-blue-500/20
-  `;
+  rounded-lg
+  border
+  border-gray-300
+  bg-white
+  px-3
+  py-2
+  text-sm
+  text-gray-700
+  outline-none
+  transition-all
+
+  hover:border-gray-400
+  hover:bg-gray-50
+
+  focus-visible:border-blue-500
+  focus-visible:ring-2
+  focus-visible:ring-blue-500/20
+  focus-visible:outline-none
+
+  active:border-blue-600
+
+  disabled:cursor-not-allowed
+  disabled:bg-gray-100
+  disabled:text-gray-400
+  disabled:opacity-60
+`;
+
 
   const FilterContent = () => (
     <div className="flex flex-wrap gap-3">
@@ -162,10 +175,24 @@ const TaskFiltersComponent: React.FC<TaskFiltersProps> = ({
           text-sm
           font-medium
           text-gray-600
-          transition-colors
+          outline-none
+          transition-all
+
           hover:bg-blue-50
           hover:text-blue-600
+
+          focus-visible:outline-none
+          focus-visible:ring-2
+          focus-visible:ring-blue-500
+          focus-visible:ring-offset-2
+
+          active:bg-blue-100
+          active:text-blue-700
+
+          disabled:cursor-not-allowed
+          disabled:opacity-50
         "
+
       >
         <X className="h-4 w-4" />
         Clear Filters
@@ -199,9 +226,24 @@ const TaskFiltersComponent: React.FC<TaskFiltersProps> = ({
             text-sm
             font-medium
             text-blue-600
-            transition-colors
+            outline-none
+            transition-all
+
             hover:bg-blue-100
+            hover:text-blue-700
+
+            focus-visible:outline-none
+            focus-visible:ring-2
+            focus-visible:ring-blue-500
+            focus-visible:ring-offset-2
+
+            active:bg-blue-200
+            active:text-blue-800
+
+            disabled:cursor-not-allowed
+            disabled:opacity-50
           "
+
           aria-expanded={isMobileFilterOpen}
           aria-label="Toggle filters"
         >
