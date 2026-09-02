@@ -20,6 +20,7 @@ export const taskApi = {
     await simulateNetworkDelay();
     
     try {
+      // throw new Error('Test API Error');
       const result = db.query(filters);
       return {
         success: true,

@@ -31,10 +31,10 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate }) => {
   };
 
   const priorityColors = {
-    low: 'bg-slate-100 text-slate-600 border-slate-200',
-    medium: 'bg-amber-50 text-amber-700 border-amber-200',
-    high: 'bg-orange-50 text-orange-700 border-orange-200',
-    urgent: 'bg-red-50 text-red-700 border-red-200',
+    low: 'bg-red-50 text-red-500 border-red-500',
+    medium: 'bg-yellow-50 text-yellow-500 border-yellow-500',
+    high: 'bg-green-50 text-green-500 border-green-500',
+    urgent: 'bg-orange-50 text-orange-500 border-orange-500',
   };
 
   const statusIcons = {
@@ -45,10 +45,37 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate }) => {
   };
 
   const priorityIcons = {
-    low: <Circle className="h-3 w-3 fill-current" />,
-    medium: <Flag className="h-3.5 w-3.5" />,
-    high: <Flag className="h-3.5 w-3.5" />,
-    urgent: <AlertCircle className="h-3.5 w-3.5" />,
+    low: <Circle className="h-3 w-3 fill-current text-red-500" />,
+    medium: <Flag className="h-3.5 w-3.5 text-yellow-500" />,
+    high: <Flag className="h-3.5 w-3.5 text-green-500" />,
+    urgent: <AlertCircle className="h-3.5 w-3.5 text-orange-500" />,
+  };
+
+  /* =========================================================
+     OPEN TASK
+  ========================================================= */
+
+  const handleOpenTask = () => {
+    const params = new URLSearchParams(window.location.search);
+
+    params.set('task', task.id);
+
+    window.history.pushState(
+      {},
+      '',
+      `${window.location.pathname}?${params.toString()}`
+    );
+
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  };
+
+  const handleTaskKeyDown = (
+    event: React.KeyboardEvent<HTMLHeadingElement>
+  ) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handleOpenTask();
+    }
   };
 
   const handleStatusChange = async (
@@ -111,7 +138,30 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate }) => {
     >
       {/* Header */}
       <div className="mb-2 flex items-start justify-between gap-3">
-        <h3 className="flex-1 text-sm font-semibold leading-5 text-gray-900">
+
+        {/* =====================================================
+            OPEN TASK - CLICK / ENTER / SPACE
+        ====================================================== */}
+        <h3
+          role="button"
+          tabIndex={0}
+          aria-label={`Open task: ${task.title}`}
+          onClick={handleOpenTask}
+          onKeyDown={handleTaskKeyDown}
+          className="
+            flex-1
+            cursor-pointer
+            text-sm
+            font-semibold
+            leading-5
+            text-gray-900
+            hover:text-blue-600
+            focus-visible:outline-none
+            focus-visible:ring-2
+            focus-visible:ring-blue-500
+            focus-visible:ring-offset-2
+          "
+        >
           {task.title}
         </h3>
 
@@ -169,6 +219,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate }) => {
 
       {/* Footer */}
       <div className="mt-3 flex items-center justify-between border-t border-gray-100 pt-3">
+
         {/* Status */}
         <div className="relative">
           <select
@@ -212,6 +263,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate }) => {
 
         {/* Created Date & Delete */}
         <div className="flex items-center gap-2">
+
           <span className="text-xs text-gray-400">
             {new Date(task.createdAt).toLocaleDateString()}
           </span>
@@ -241,6 +293,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate }) => {
               <Trash2 className="h-4 w-4" />
             </button>
           )}
+
         </div>
       </div>
     </div>

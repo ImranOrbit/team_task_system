@@ -1,7 +1,7 @@
-import React from 'react';
-import { ClipboardList } from 'lucide-react';
-import { Task } from '@/types/task';
-import TaskCard from '../tasks/TaskCard';
+import React from "react";
+import { ClipboardList } from "lucide-react";
+import { Task } from "@/types/task";
+import TaskCard from "../tasks/TaskCard";
 
 interface TaskListProps {
   tasks: Task[];
@@ -27,12 +27,14 @@ const TaskList: React.FC<TaskListProps> = ({
           </div>
         </div>
 
-        <h3 className="text-xl font-semibold text-gray-900">
-          No tasks found
-        </h3>
+        <h3 className="text-xl font-semibold text-gray-900">No tasks found</h3>
 
         <p className="mt-2 text-gray-600">
-          Try adjusting your filters or create a new task.
+          There are no tasks matching your current search or filters.
+        </p>
+
+        <p className="mt-1 text-sm text-gray-500">
+          Try changing your search or filters, or create a new task.
         </p>
       </div>
     );
@@ -41,11 +43,7 @@ const TaskList: React.FC<TaskListProps> = ({
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
       {tasks.map((task) => (
-        <TaskCard
-          key={task.id}
-          task={task}
-          onUpdate={onTaskUpdate}
-        />
+        <TaskCard key={task.id} task={task} onUpdate={onTaskUpdate} />
       ))}
     </div>
   );
