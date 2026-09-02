@@ -10,11 +10,12 @@ import StatsCards from '@/components/dashboard/StatsCards';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorState from '@/components/common/ErrorState';
 import CreateTaskModal from '@/components/tasks/CreateTaskModal';
+import TaskDetails from '@/components/tasks/TaskDetails';
 import { ClipboardList, Plus } from 'lucide-react';
 
 /* =========================================================
    URL CHANGE #1
-   Read filters/search/sort/page from URL
+   Read filters/search/sort/page/task from URL
 ========================================================= */
 
 const getFiltersFromURL = (): TaskFilters => {
@@ -34,6 +35,9 @@ const getFiltersFromURL = (): TaskFilters => {
 
     assignee: params.get('assignee') || undefined,
 
+    overdue:
+      params.get('overdue') === 'true' || undefined,
+
     sortBy:
       (params.get('sortBy') as TaskFilters['sortBy']) || 'createdAt',
 
@@ -42,13 +46,15 @@ const getFiltersFromURL = (): TaskFilters => {
   };
 };
 
-
 /* =========================================================
    URL CHANGE #2
    Convert current filters into URL
 ========================================================= */
 
-const updateURL = (filters: TaskFilters) => {
+const updateURL = (
+  filters: TaskFilters,
+  replace = false
+) => {
   const params = new URLSearchParams();
 
   if (filters.search) {
@@ -67,6 +73,10 @@ const updateURL = (filters: TaskFilters) => {
     params.set('assignee', filters.assignee);
   }
 
+  if (filters.overdue) {
+    params.set('overdue', 'true');
+  }
+
   if (filters.sortBy && filters.sortBy !== 'createdAt') {
     params.set('sortBy', filters.sortBy);
   }
@@ -81,25 +91,18 @@ const updateURL = (filters: TaskFilters) => {
 
   const queryString = params.toString();
 
-  // const newURL = queryString
-  //   ? `${window.location.pathname}?${queryString}`
-  //   : window.location.pathname;
   const newURL = queryString
     ? `/tasks?${queryString}`
     : '/tasks';
 
-  /*
-    pushState:
-    - page not reload 
-    - browser history
-    - Back/Forward
-  */
-  window.history.pushState({}, '', newURL);
+  if (replace) {
+    window.history.replaceState({}, '', newURL);
+  } else {
+    window.history.pushState({}, '', newURL);
+  }
 };
 
-
 function App() {
-
   /* =========================================================
      URL CHANGE #3
      Initial filters URL
@@ -111,6 +114,22 @@ function App() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  /* =========================================================
+     TASK DETAILS
+  ========================================================= */
+
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(() => {
+    const params = new URLSearchParams(window.location.search);
+
+    return params.get('task');
+  });
+
+  /* =========================================================
+     INITIAL LOAD
+  ========================================================= */
+
+  const [initialLoading, setInitialLoading] = useState(true);
+
   const {
     tasks,
     loading,
@@ -119,17 +138,15 @@ function App() {
     refetch,
   } = useTasks(filters);
 
-
   /* =========================================================
-     URL CHANGE #4
-     One central function for filter/search/sort/page changes
+     Mark initial loading as completed
   ========================================================= */
 
-  const applyFilters = (newFilters: TaskFilters) => {
-    setFilters(newFilters);
-    updateURL(newFilters);
-  };
-
+  useEffect(() => {
+    if (!loading) {
+      setInitialLoading(false);
+    }
+  }, [loading]);
 
   /* =========================================================
      URL CHANGE #5
@@ -152,7 +169,6 @@ function App() {
     });
   };
 
-
   /* =========================================================
      URL CHANGE #6
      Pagination change
@@ -171,39 +187,85 @@ function App() {
     });
   };
 
-
   /* =========================================================
      URL CHANGE #7
      Search change
   ========================================================= */
 
-  const handleSearch = (search: string) => {
-    setFilters((prev) => {
-      const updatedFilters: TaskFilters = {
-        ...prev,
-        search: search || undefined,
-        page: 1,
-      };
+    const handleSearch = (search: string) => {
+      setFilters((prev) => {
+        const updatedFilters: TaskFilters = {
+          ...prev,
+          search: search || undefined,
+          page: 1,
+        };
 
-      updateURL(updatedFilters);
+        updateURL(updatedFilters, true);
 
-      return updatedFilters;
-    });
-  };
+        return updatedFilters;
+      });
+    };
 
 
   /* =========================================================
-     URL CHANGE #8
-     Browser Back / Forward support
+     TASK OPEN
+  ========================================================= */
 
-     URL changes filters state
+  const handleOpenTask = (taskId: string) => {
+    const params = new URLSearchParams(window.location.search);
+
+    params.set('task', taskId);
+
+    const queryString = params.toString();
+
+    window.history.pushState(
+      {},
+      '',
+      queryString
+        ? `${window.location.pathname}?${queryString}`
+        : window.location.pathname
+    );
+
+    setSelectedTaskId(taskId);
+  };
+
+  /* =========================================================
+     TASK CLOSE
+  ========================================================= */
+
+  const handleCloseTask = () => {
+    const params = new URLSearchParams(window.location.search);
+
+    params.delete('task');
+
+    const queryString = params.toString();
+
+    window.history.pushState(
+      {},
+      '',
+      queryString
+        ? `${window.location.pathname}?${queryString}`
+        : window.location.pathname
+    );
+
+    setSelectedTaskId(null);
+  };
+
+  /* =========================================================
+     Browser Back / Forward support
   ========================================================= */
 
   useEffect(() => {
     const handlePopState = () => {
-      const urlFilters = getFiltersFromURL();
+      const params = new URLSearchParams(window.location.search);
 
-      setFilters(urlFilters);
+      const taskId = params.get('task');
+
+      setSelectedTaskId(taskId);
+
+      if (!taskId) {
+        setFilters(getFiltersFromURL());
+      }
     };
 
     window.addEventListener('popstate', handlePopState);
@@ -213,6 +275,13 @@ function App() {
     };
   }, []);
 
+  /* =========================================================
+     Selected Task
+  ========================================================= */
+
+  const selectedTask = selectedTaskId
+    ? db.getById(selectedTaskId)
+    : null;
 
   /* =========================================================
      Create Task
@@ -220,19 +289,34 @@ function App() {
 
   const handleCreateTask = (newTask: any) => {
     db.create(newTask);
+
     refetch();
+
     setIsModalOpen(false);
   };
 
-
   /* =========================================================
-     Loading
+     TASK DETAILS PAGE
   ========================================================= */
 
-  if (loading) {
-    return <LoadingSpinner message="Loading tasks..." />;
+  if (selectedTaskId && selectedTask) {
+    return (
+      <TaskDetails
+        task={selectedTask}
+        onBack={handleCloseTask}
+      />
+    );
   }
 
+  /* =========================================================
+     INITIAL Loading
+  ========================================================= */
+
+  if (initialLoading) {
+    return (
+      <LoadingSpinner message="Loading tasks..." />
+    );
+  }
 
   /* =========================================================
      Error
@@ -247,33 +331,24 @@ function App() {
     );
   }
 
-
   return (
     <div className="min-h-screen bg-gray-50">
-
       <div className="container mx-auto max-w-7xl px-4 py-6">
 
         {/* Header */}
         <header className="mb-6">
-
           <div className="flex flex-wrap items-center justify-between gap-4">
 
             <div>
-
               <h1 className="flex items-center gap-2 text-3xl font-bold text-gray-900">
-
                 <ClipboardList className="h-8 w-8 text-blue-600" />
-
                 Team Task System
-
               </h1>
 
               <p className="mt-1 text-gray-600">
                 Manage your team's work efficiently
               </p>
-
             </div>
-
 
             <button
               type="button"
@@ -297,31 +372,23 @@ function App() {
                 focus-visible:ring-offset-2
               "
             >
-
               <Plus className="h-5 w-5" />
-
               New Task
-
             </button>
 
           </div>
-
         </header>
-
 
         {/* Stats */}
         <StatsCards tasks={tasks} />
 
-
         {/* Search & Filters */}
-
         <div className="mb-6 space-y-4">
 
           <TaskSearch
             onSearch={handleSearch}
             initialValue={filters.search || ''}
           />
-
 
           <TaskFiltersComponent
             filters={filters}
@@ -330,26 +397,21 @@ function App() {
 
         </div>
 
-
         {/* Task List */}
-
         <TaskList
           tasks={tasks}
           loading={loading}
           onTaskUpdate={refetch}
+          onOpenTask={handleOpenTask}
         />
 
-
         {/* Pagination */}
-
         <TaskPagination
           pagination={pagination}
           onPageChange={handlePageChange}
         />
 
-
         {/* Create Task Modal */}
-
         <CreateTaskModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
@@ -357,7 +419,6 @@ function App() {
         />
 
       </div>
-
     </div>
   );
 }

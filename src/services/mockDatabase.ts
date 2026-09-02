@@ -208,6 +208,7 @@ export class MockDatabase {
       status,
       priority,
       assignee,
+      overdue,
       search,
       sortBy = 'createdAt',
       sortOrder = 'desc',
@@ -243,6 +244,31 @@ export class MockDatabase {
           .includes(assignee.toLowerCase())
       );
     }
+
+ // =======================================================
+    // Overdue Filter
+// =======================================================
+    if (overdue) {
+      const today = new Date();
+
+      today.setHours(0, 0, 0, 0);
+
+      result = result.filter((task) => {
+        if (!task.dueDate) {
+          return false;
+        }
+
+        const dueDate = new Date(task.dueDate);
+
+        dueDate.setHours(0, 0, 0, 0);
+
+        return (
+          dueDate < today &&
+          task.status !== 'done'
+        );
+      });
+    }
+
 
     // =======================================================
     // Search

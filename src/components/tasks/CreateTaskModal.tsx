@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   X,
   Plus,
@@ -9,15 +9,13 @@ import {
   Flag,
   CalendarDays,
   AlignLeft,
-} from 'lucide-react';
-import { Task, TaskStatus, Priority } from '@/types/task';
+} from "lucide-react";
+import { Task, TaskStatus, Priority } from "@/types/task";
 
 interface CreateTaskModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCreate: (
-    task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>
-  ) => void;
+  onCreate: (task: Omit<Task, "id" | "createdAt" | "updatedAt">) => void;
 }
 
 const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
@@ -25,13 +23,29 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
   onClose,
   onCreate,
 }) => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [assignee, setAssignee] = useState('');
-  const [status, setStatus] = useState<TaskStatus>('todo');
-  const [priority, setPriority] = useState<Priority>('medium');
-  const [dueDate, setDueDate] = useState('');
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [assignee, setAssignee] = useState("");
+  const [status, setStatus] = useState<TaskStatus>("todo");
+  const [priority, setPriority] = useState<Priority>("medium");
+  const [dueDate, setDueDate] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [isOpen, onClose]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,7 +67,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
       await onCreate(newTask);
       handleClose();
     } catch (error) {
-      console.error('Failed to create task:', error);
+      console.error("Failed to create task:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -62,12 +76,12 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
   const handleClose = () => {
     if (isSubmitting) return;
 
-    setTitle('');
-    setDescription('');
-    setAssignee('');
-    setStatus('todo');
-    setPriority('medium');
-    setDueDate('');
+    setTitle("");
+    setDescription("");
+    setAssignee("");
+    setStatus("todo");
+    setPriority("medium");
+    setDueDate("");
 
     onClose();
   };
@@ -135,11 +149,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
                 text-blue-600
               "
             >
-              <Plus
-                className="h-5 w-5"
-                strokeWidth={2}
-                aria-hidden="true"
-              />
+              <Plus className="h-5 w-5" strokeWidth={2} aria-hidden="true" />
             </div>
 
             <div>
@@ -180,19 +190,12 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
             "
             aria-label="Close modal"
           >
-            <X
-              className="h-5 w-5"
-              strokeWidth={2}
-              aria-hidden="true"
-            />
+            <X className="h-5 w-5" strokeWidth={2} aria-hidden="true" />
           </button>
         </div>
 
         {/* Form */}
-        <form
-          onSubmit={handleSubmit}
-          className="flex min-h-0 flex-1 flex-col"
-        >
+        <form onSubmit={handleSubmit} className="flex min-h-0 flex-1 flex-col">
           <div className="overflow-y-auto px-5 py-5 sm:px-6">
             <div className="space-y-5">
               {/* Title */}
@@ -398,9 +401,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
                     <select
                       id="task-status"
                       value={status}
-                      onChange={(e) =>
-                        setStatus(e.target.value as TaskStatus)
-                      }
+                      onChange={(e) => setStatus(e.target.value as TaskStatus)}
                       className="
                         h-11
                         w-full
@@ -457,9 +458,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
                     <select
                       id="task-priority"
                       value={priority}
-                      onChange={(e) =>
-                        setPriority(e.target.value as Priority)
-                      }
+                      onChange={(e) => setPriority(e.target.value as Priority)}
                       className="
                         h-11
                         w-full

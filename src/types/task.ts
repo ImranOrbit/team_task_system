@@ -13,16 +13,29 @@ export interface Task {
   updatedAt: string;
 }
 
+// export interface TaskFilters {
+//   status?: TaskStatus;
+//   priority?: Priority;
+//   assignee?: string;
+//   search?: string;
+//   sortBy?: keyof Task;
+//   sortOrder?: 'asc' | 'desc';
+//   page?: number;
+//   limit?: number;
+// }
+
 export interface TaskFilters {
+  page?: number;
+  limit?: number;
+  search?: string;
   status?: TaskStatus;
   priority?: Priority;
   assignee?: string;
-  search?: string;
-  sortBy?: keyof Task;
+  overdue?: boolean;
+  sortBy?: 'createdAt' | 'dueDate' | 'title' | 'priority' | 'status';
   sortOrder?: 'asc' | 'desc';
-  page?: number;
-  limit?: number;
 }
+
 
 export interface PaginatedResponse<T> {
   data: T[];

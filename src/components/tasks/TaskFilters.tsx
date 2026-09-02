@@ -1,11 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { ChevronDown, ChevronUp, SlidersHorizontal, X } from 'lucide-react';
-import {
-  TaskFilters,
-  TaskStatus,
-  Priority,
-} from '@/types/task';
-import { taskApi } from '@/services/api';
+import React, { useState, useEffect } from "react";
+import { ChevronDown, ChevronUp, SlidersHorizontal, X } from "lucide-react";
+import { TaskFilters, TaskStatus, Priority } from "@/types/task";
+import { taskApi } from "@/services/api";
 
 interface TaskFiltersProps {
   filters: TaskFilters;
@@ -59,17 +55,15 @@ const TaskFiltersComponent: React.FC<TaskFiltersProps> = ({
   disabled:opacity-60
 `;
 
-
   const FilterContent = () => (
     <div className="flex flex-wrap gap-3">
       {/* Status Filter */}
       <select
         className={selectClassName}
-        value={filters.status || ''}
+        value={filters.status || ""}
         onChange={(e) =>
           onFilterChange({
-            status:
-              (e.target.value as TaskStatus) || undefined,
+            status: (e.target.value as TaskStatus) || undefined,
           })
         }
         aria-label="Filter by status"
@@ -84,11 +78,10 @@ const TaskFiltersComponent: React.FC<TaskFiltersProps> = ({
       {/* Priority Filter */}
       <select
         className={selectClassName}
-        value={filters.priority || ''}
+        value={filters.priority || ""}
         onChange={(e) =>
           onFilterChange({
-            priority:
-              (e.target.value as Priority) || undefined,
+            priority: (e.target.value as Priority) || undefined,
           })
         }
         aria-label="Filter by priority"
@@ -100,10 +93,62 @@ const TaskFiltersComponent: React.FC<TaskFiltersProps> = ({
         <option value="urgent">Urgent</option>
       </select>
 
+      {/* Overdue Filter */}
+      <label
+        className="
+          flex
+          min-h-[40px]
+          cursor-pointer
+          items-center
+          gap-2
+          rounded-lg
+          border
+          border-gray-300
+          bg-white
+          px-3
+          py-2
+          text-sm
+          text-gray-700
+          transition-all
+          hover:border-gray-400
+          hover:bg-gray-50
+          focus-within:border-blue-500
+          focus-within:ring-2
+          focus-within:ring-blue-500/20
+          active:bg-gray-100
+        "
+       >
+        <input
+          type="checkbox"
+          checked={filters.overdue === true}
+          onChange={(e) =>
+            onFilterChange({
+              overdue: e.target.checked || undefined,
+            })
+          }
+          className="
+            h-4
+            w-4
+            rounded
+            border-gray-300
+            accent-blue-600
+            focus-visible:outline-none
+            focus-visible:ring-2
+            focus-visible:ring-blue-500
+            focus-visible:ring-offset-2
+            disabled:cursor-not-allowed
+            disabled:opacity-50
+          "
+          aria-label="Show overdue tasks only"
+        />
+
+        <span>Overdue</span>
+      </label>
+
       {/* Assignee Filter */}
       <select
         className={selectClassName}
-        value={filters.assignee || ''}
+        value={filters.assignee || ""}
         onChange={(e) =>
           onFilterChange({
             assignee: e.target.value || undefined,
@@ -123,10 +168,10 @@ const TaskFiltersComponent: React.FC<TaskFiltersProps> = ({
       {/* Sort By */}
       <select
         className={selectClassName}
-        value={filters.sortBy || 'createdAt'}
+        value={filters.sortBy || "createdAt"}
         onChange={(e) =>
           onFilterChange({
-            sortBy: e.target.value as TaskFilters['sortBy'],
+            sortBy: e.target.value as TaskFilters["sortBy"],
           })
         }
         aria-label="Sort tasks by"
@@ -141,10 +186,10 @@ const TaskFiltersComponent: React.FC<TaskFiltersProps> = ({
       {/* Sort Order */}
       <select
         className={selectClassName}
-        value={filters.sortOrder || 'desc'}
+        value={filters.sortOrder || "desc"}
         onChange={(e) =>
           onFilterChange({
-            sortOrder: e.target.value as 'asc' | 'desc',
+            sortOrder: e.target.value as "asc" | "desc",
           })
         }
         aria-label="Sort order"
@@ -161,8 +206,9 @@ const TaskFiltersComponent: React.FC<TaskFiltersProps> = ({
             status: undefined,
             priority: undefined,
             assignee: undefined,
-            sortBy: 'createdAt',
-            sortOrder: 'desc',
+            overdue: undefined,
+            sortBy: "createdAt",
+            sortOrder: "desc",
           })
         }
         className="
@@ -192,7 +238,6 @@ const TaskFiltersComponent: React.FC<TaskFiltersProps> = ({
           disabled:cursor-not-allowed
           disabled:opacity-50
         "
-
       >
         <X className="h-4 w-4" />
         Clear Filters
@@ -211,9 +256,7 @@ const TaskFiltersComponent: React.FC<TaskFiltersProps> = ({
       <div className="md:hidden">
         <button
           type="button"
-          onClick={() =>
-            setIsMobileFilterOpen((prev) => !prev)
-          }
+          onClick={() => setIsMobileFilterOpen((prev) => !prev)}
           className="
             flex
             w-full
@@ -243,13 +286,12 @@ const TaskFiltersComponent: React.FC<TaskFiltersProps> = ({
             disabled:cursor-not-allowed
             disabled:opacity-50
           "
-
           aria-expanded={isMobileFilterOpen}
           aria-label="Toggle filters"
         >
           <span className="flex items-center gap-2">
             <SlidersHorizontal className="h-4 w-4" />
-            {isMobileFilterOpen ? 'Hide Filters' : 'Show Filters'}
+            {isMobileFilterOpen ? "Hide Filters" : "Show Filters"}
           </span>
 
           {isMobileFilterOpen ? (
