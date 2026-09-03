@@ -8,8 +8,7 @@ The main goal of this project was to keep the workflow simple, responsive, and e
 
 ## Screenshots
 Desktop — 1280px
-Add the 1280px screenshot here:
-screenshots/desktop-1280.png
+Add the 1280px screenshot here:![Screenshot](https://raw.githubusercontent.com/ImranOrbit/team_task_system/4033708f78f744eba68654ab1d8f69868af95006/Desktop.png)
 Tablet — 768px
 Add the 768px screenshot here:![Screenshot](https://raw.githubusercontent.com/ImranOrbit/team_task_system/d99325ac0132f383d4a961fa4dfca7042a0d7352/768px-1280px.png)
 Mobile — 375px
