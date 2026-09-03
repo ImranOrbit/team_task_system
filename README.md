@@ -58,9 +58,9 @@ Make sure you have:
 •	npm 9 or newer
 Installation
 Clone the repository:
-git clone <your-github-repository-url>
+git clone https://github.com/ImranOrbit/team_task_system 
 Move into the project directory:
-cd team-task-system
+cd team_task_system 
 Install dependencies:
 npm install
 Start the development server:
