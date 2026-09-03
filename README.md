@@ -14,7 +14,7 @@ Tablet — 768px
 Add the 768px screenshot here:
 screenshots/tablet-768.png
 Mobile — 375px
-Add the 375px screenshot here:
+Add the 375px screenshot here: ![Screenshot](https://raw.githubusercontent.com/ImranOrbit/team_task_system/7ea17c44dc2ba16eff38661b9b88e4fa4fcd0ac1/375px-768px.png)
 screenshots/mobile-375.png
 The screenshots cover the three required target widths from the exercise.
 ________________________________________
